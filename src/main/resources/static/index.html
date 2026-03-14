@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Manajemen Data KTP</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body class="container mt-5">
+<h2>Form Data KTP</h2>
+<form id="ktpForm" class="mb-4">
+    <input type="hidden" id="ktpId">
+    <div class="mb-3"><input type="text" id="nomorKtp" class="form-control" placeholder="Nomor KTP" required></div>
+    <div class="mb-3"><input type="text" id="namaLengkap" class="form-control" placeholder="Nama Lengkap" required></div>
+    <div class="mb-3"><input type="text" id="alamat" class="form-control" placeholder="Alamat" required></div>
+    <div class="mb-3"><input type="date" id="tanggalLahir" class="form-control" required></div>
+    <div class="mb-3">
+        <select id="jenisKelamin" class="form-control">
+            <option value="Laki-laki">Laki-laki</option>
+            <option value="Perempuan">Perempuan</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary" id="btnSubmit">Simpan</button>
+    <button type="button" class="btn btn-secondary" onclick="resetForm()">Reset</button>
+</form>
+
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th>No. KTP</th>
+        <th>Nama</th>
+        <th>Alamat</th>
+        <th>Lahir</th>
+        <th>Gender</th>
+        <th>Aksi</th>
+    </tr>
+    </thead>
+    <tbody id="ktpTableBody"></tbody>
+</table>
+
+<script>
+    const API_URL = "http://localhost:8080/ktp";
+
+    $(document).ready(() => loadKtp());
+
+    function loadKtp() {
+        $.get(API_URL, (data) => {
+            let rows = '';
+            data.forEach(item => {
+                rows += `<tr>
+                    <td>${item.nomorKtp}</td>
+                    <td>${item.namaLengkap}</td>
+                    <td>${item.alamat}</td>
+                    <td>${item.tanggalLahir}</td>
+                    <td>${item.jenisKelamin}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="editKtp(${item.id})">Edit</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteKtp(${item.id})">Hapus</button>
+                    </td>
+                </tr>`;
+            });
+            $('#ktpTableBody').html(rows);
+        });
+    }
+
+    $('#ktpForm').submit(function(e) {
+        e.preventDefault();
+        const id = $('#ktpId').val();
+        const data = {
+            nomorKtp: $('#nomorKtp').val(),
+            namaLengkap: $('#namaLengkap').val(),
+            alamat: $('#alamat').val(),
+            tanggalLahir: $('#tanggalLahir').val(),
+            jenisKelamin: $('#jenisKelamin').val()
+        };
+
+        const method = id ? 'PUT' : 'POST';
+        const url = id ? `${API_URL}/${id}` : API_URL;
+
+        $.ajax({
+            url: url,
+            type: method,
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: () => {
+                alert('Berhasil disimpan!');
+                resetForm();
+                loadKtp();
+            },
+            error: (err) => alert('Error: ' + err.responseText)
+        });
+    });
+
+    function editKtp(id) {
+        $.get(`${API_URL}/${id}`, (data) => {
+            $('#ktpId').val(data.id);
+            $('#nomorKtp').val(data.nomorKtp).prop('disabled', true);
+            $('#namaLengkap').val(data.namaLengkap);
+            $('#alamat').val(data.alamat);
+            $('#tanggalLahir').val(data.tanggalLahir);
+            $('#jenisKelamin').val(data.jenisKelamin);
+            $('#btnSubmit').text('Perbarui');
+        });
+    }
+
+    function deleteKtp(id) {
+        if(confirm('Hapus data ini?')) {
+            $.ajax({
+                url: `${API_URL}/${id}`,
+                type: 'DELETE',
+                success: () => {
+                    alert('Terhapus!');
+                    loadKtp();
+                }
+            });
+        }
+    }
+
+    function resetForm() {
+        $('#ktpId').val('');
+        $('#ktpForm')[0].reset();
+        $('#nomorKtp').prop('disabled', false);
+        $('#btnSubmit').text('Simpan');
+    }
+</script>
+</body>
+</html>
