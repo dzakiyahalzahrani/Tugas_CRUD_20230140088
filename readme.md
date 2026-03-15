@@ -67,7 +67,7 @@ Diberikan jika terjadi kesalahan (misal: nomor KTP sudah ada atau data tidak dit
 }
 ````
 
-**Create**
+
 
 
 
