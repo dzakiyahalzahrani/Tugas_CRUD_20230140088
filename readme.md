@@ -66,9 +66,9 @@ Diberikan jika terjadi kesalahan (misal: nomor KTP sudah ada atau data tidak dit
   "message": "KTP sudah terdaftar"
 }
 ````
+## Tampilan ##
 
-## Tampilan ## 
-Create 
+Create
 ![create.jpeg](ss/create.jpeg)
 ![hasil create.png](ss/hasil%20create.png)
 
