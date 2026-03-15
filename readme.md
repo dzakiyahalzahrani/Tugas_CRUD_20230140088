@@ -67,10 +67,9 @@ Diberikan jika terjadi kesalahan (misal: nomor KTP sudah ada atau data tidak dit
 }
 ````
 
-## Tampilan ##
-
+## Tampilan ## 
 Create 
-![create.png](ss/create.png)
+![create.jpeg](ss/create.jpeg)
 ![hasil create.png](ss/hasil%20create.png)
 
 Update
